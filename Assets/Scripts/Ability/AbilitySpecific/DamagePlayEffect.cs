@@ -6,7 +6,7 @@ using UnityEngine;
     menuName = "CardData/PlayEffects/Damage")]
 public class DamagePlayEffect : CardPlayEffect
 {
-    [SerializeField] int _damageAmount = 1;
+    public int _damageAmount = 1;
 
     public override void Activate(ITargetable target)
     {

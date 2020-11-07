@@ -14,6 +14,11 @@ public class Deck <T> where T : Card
     public int Count => _cards.Count;
     public T TopItem => _cards[_cards.Count - 1];
     public T BottomItem => _cards[0];
+
+    public T Card1 => _cards[0];
+    public T Card2 => _cards[1];
+    public T Card3 => _cards[2];
+
     public bool IsEmpty => _cards.Count == 0;
     public int LastIndex
     {
@@ -27,6 +32,14 @@ public class Deck <T> where T : Card
             {
                 return _cards.Count - 1;
             }
+        }
+    }
+
+    public void Display()
+    {
+        for (int currentIndex = 0; currentIndex < Count; ++currentIndex)
+        {
+            Debug.LogWarning("Card: " + _cards[currentIndex].Name + " Index: " + currentIndex);
         }
     }
 

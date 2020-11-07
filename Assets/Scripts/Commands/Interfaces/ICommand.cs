@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamageable
+public interface ICommand
 {
-    void TakeDamage(int damage);
-    void Kill();
+    void Execute();
+    void Undo();
 }
