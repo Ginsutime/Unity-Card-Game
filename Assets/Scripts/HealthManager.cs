@@ -68,15 +68,25 @@ public class HealthManager : MonoBehaviour, ITargetable, IDamageable
         }
         else if (stateMachine.CurrentState == enemyTurnCardGameState)
         {
-            if (ReflectDamagePlayEffect._damageReflected == false)
+            if (ReflectDamagePlayEffect._damageReflected == false && DoubleDamagePlayEffect._doubleDamageActivated == false)
             {
                 playerHealth -= amount;
                 Debug.Log("Took damage. Remaining health: " + playerHealth);
             }
-            else
+            else if (ReflectDamagePlayEffect._damageReflected == true && DoubleDamagePlayEffect._doubleDamageActivated == false)
             {
                 enemyHealth -= amount;
                 Debug.Log("Damage reflected to enemy. Remaining enemy health: " + enemyHealth);
+            }
+            else if (DoubleDamagePlayEffect._doubleDamageActivated == true && ReflectDamagePlayEffect._damageReflected == false)
+            {
+                playerHealth -= (amount / 2);
+                Debug.Log("Double Damage removed from enemy dmg number (# / 2): Base # = " + amount / 2);
+            }
+            else
+            {
+                playerHealth -= (amount / 2);
+                Debug.Log("Double Damage removed from enemy dmg number (# / 2): Base # = " + amount / 2);
             }
 
             if (playerHealth <= 0)

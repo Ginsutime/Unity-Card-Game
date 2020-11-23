@@ -23,7 +23,7 @@ public class DamagePlayEffect : CardPlayEffect
             else if (DoubleDamagePlayEffect._doubleDamageActivated == true)
             {
                 objectToDamage.TakeDamage(_damageAmount * DoubleDamagePlayEffect._doubleDamage);
-                Debug.Log("Add damage to the target");
+                Debug.Log("Add double damage to the target");
             }
             else if (NegateDamagePlayEffect._negateDamageActivated == true)
             {
