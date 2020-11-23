@@ -5,11 +5,15 @@ using System;
 
 public class HealthManager : MonoBehaviour, ITargetable, IDamageable
 {
-    public int enemyHealth = 20;
-    public int playerHealth = 20;
+    public int enemyHealth = 50;
+    public int playerHealth = 50;
 
     public static event Action LoseEventState;
     public static event Action WinEventState;
+
+    [SerializeField] StateMachine stateMachine;
+    [SerializeField] PlayerTurnCardGameState playerTurnCardGameState;
+    [SerializeField] EnemyTurnCardGameState enemyTurnCardGameState;
 
     void PlayerDamage(int dmg)
     {
@@ -35,14 +39,50 @@ public class HealthManager : MonoBehaviour, ITargetable, IDamageable
         Debug.Log("HealthManager was successfully assigned as the target");
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int amount)
     {
-        enemyHealth -= damage;
-        Debug.Log("Took damage. Remaining health: " + enemyHealth);
-
-        if (enemyHealth <= 0)
+        if (stateMachine.CurrentState == playerTurnCardGameState)
         {
-            WinEventState?.Invoke();
+            if (HealPlayEffect._isHealing == false) // If not healing, then damage card
+            {
+                enemyHealth -= amount;
+                Debug.Log("Took damage. Remaining health: " + enemyHealth);
+            }
+            else
+            { //  Else it is healing card
+                if (playerHealth <= 50 || playerHealth > 50)
+                {
+                    playerHealth = Mathf.Clamp(playerHealth, 0, 50);
+                    playerHealth += amount;
+
+                    Debug.Log(playerHealth = Mathf.Clamp(playerHealth, 0, 50));
+                    Debug.Log("Took healing. Remaining health: " + playerHealth);
+                    HealPlayEffect._isHealing = false;
+                }
+            }
+
+            if (enemyHealth <= 0)
+            {
+                WinEventState?.Invoke();
+            }
+        }
+        else if (stateMachine.CurrentState == enemyTurnCardGameState)
+        {
+            if (ReflectDamagePlayEffect._damageReflected == false)
+            {
+                playerHealth -= amount;
+                Debug.Log("Took damage. Remaining health: " + playerHealth);
+            }
+            else
+            {
+                enemyHealth -= amount;
+                Debug.Log("Damage reflected to enemy. Remaining enemy health: " + enemyHealth);
+            }
+
+            if (playerHealth <= 0)
+            {
+                LoseEventState?.Invoke();
+            }
         }
     }
 }

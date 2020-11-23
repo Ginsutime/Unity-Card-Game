@@ -15,8 +15,21 @@ public class DamagePlayEffect : CardPlayEffect
         // if it is, apply damage
         if (objectToDamage != null)
         {
-            objectToDamage.TakeDamage(_damageAmount);
-            Debug.Log("Add damage to the target");
+            if (DoubleDamagePlayEffect._doubleDamageActivated == false && NegateDamagePlayEffect._negateDamageActivated == false)
+            {
+                objectToDamage.TakeDamage(_damageAmount);
+                Debug.Log("Add damage to the target");
+            }
+            else if (DoubleDamagePlayEffect._doubleDamageActivated == true)
+            {
+                objectToDamage.TakeDamage(_damageAmount * DoubleDamagePlayEffect._doubleDamage);
+                Debug.Log("Add damage to the target");
+            }
+            else if (NegateDamagePlayEffect._negateDamageActivated == true)
+            {
+                objectToDamage.TakeDamage(0);
+                Debug.Log("Damage negated to target");
+            }
         }
         else
         {

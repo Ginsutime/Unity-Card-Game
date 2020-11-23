@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DeckTester : MonoBehaviour
 {
@@ -11,15 +12,24 @@ public class DeckTester : MonoBehaviour
     Deck<AbilityCard> _abilityDiscard = new Deck<AbilityCard>();
     Deck<AbilityCard> _playerHand = new Deck<AbilityCard>();
 
+    [SerializeField]
+    List<AbilityCardData> _enemyDeckConfig
+    = new List<AbilityCardData>();
+    Deck<AbilityCard> _enemyDamageHand = new Deck<AbilityCard>();
+
     public OnCardClick onCardClick;
     public bool gameStarted = false;
 
     public bool cooldown = false;
     public bool shuffling = false;
 
+    public static event Action OnPlay;
+    public static event Action OnDraw;
+
     private void Start()
     {
         SetupAbilityDeck();
+        SetupEnemyAbilityDeck();
     }
 
     private void SetupAbilityDeck()
@@ -31,6 +41,17 @@ public class DeckTester : MonoBehaviour
         }
 
         _abilityDeck.Shuffle();
+    }
+
+    private void SetupEnemyAbilityDeck()
+    {
+        foreach (AbilityCardData abilityData in _enemyDeckConfig)
+        {
+            AbilityCard newAbilityCard = new AbilityCard(abilityData);
+            _enemyDamageHand.Add(newAbilityCard);
+        }
+
+        _enemyDamageHand.Shuffle();
     }
 
     public void InitialDraw(int cardNumber)
@@ -88,6 +109,8 @@ public class DeckTester : MonoBehaviour
             _abilityCardView.DisplayCard1(_playerHand.GetCard(0));
             _abilityCardView.DisplayCard2(_playerHand.GetCard(1));
             _abilityCardView.DisplayCard3(_playerHand.GetCard(2));
+
+            OnDraw?.Invoke();
         }
         else
         {
@@ -111,6 +134,8 @@ public class DeckTester : MonoBehaviour
 
             Invoke("ResetCooldown", 1.6f);
             cooldown = true;
+
+            OnPlay?.Invoke();
 
             if (onCardClick.cardSelected == 1)
             {
@@ -168,6 +193,13 @@ public class DeckTester : MonoBehaviour
 
         // Internal way of drawing card since no need for player to do so
         Invoke("Draw", 1.5f);
+    }
+
+    public void PlayEnemyCard()
+    {
+        AbilityCard targetCard = _enemyDamageHand.GetCard(UnityEngine.Random.Range(1, 8));
+        targetCard.Play();
+        Debug.LogError("THIS WQORKS");
     }
 
     // Moves cards from discard pile to ability deck and uses Deck's Shuffle
