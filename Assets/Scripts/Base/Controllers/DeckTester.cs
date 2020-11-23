@@ -199,7 +199,6 @@ public class DeckTester : MonoBehaviour
     {
         AbilityCard targetCard = _enemyDamageHand.GetCard(UnityEngine.Random.Range(1, 8));
         targetCard.Play();
-        Debug.LogError("THIS WQORKS");
     }
 
     // Moves cards from discard pile to ability deck and uses Deck's Shuffle
